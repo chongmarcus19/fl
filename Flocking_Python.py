@@ -44,10 +44,7 @@ class Flock:
         for i in range(0, self.frames):
             v1 = np.zeros((2, self.N))
             v2 = np.zeros((2, self.N))
-            v3 = np.array([np.sum(self.v[0, :]) / self.N,
-                           np.sum(self.v[1, :]) / self.N, ]) * self.c3
-            if np.linalg.norm(v3) > self.vlimit:
-                v3 *= self.vlimit / np.linalg.norm(v3)
+            v3 = np.zeros((2, self.N))
             v4 = np.zeros((2, self.N))
             for n in range(0, self.N):
                 if n > 5:
@@ -76,6 +73,12 @@ class Flock:
                         # Compute Repulsion [non-linear scaling] v2
                         v2[:, n] = v2[:, n] - c2 * r / (rmag ** 2)
 
+                        # Compute heading [alignment] v3
+                        v3 = np.array(
+                            [np.sum(self.v[0, :]) / self.N, np.sum(self.v[1, :]) / self.N, ]) * self.c3
+
+                        if np.linalg.norm(v3) > self.vlimit:
+                            v3 *= self.vlimit / np.linalg.norm(v3)
                 if n > 5:
                     # Compute random velocity component v4
                     v4[:, n] = self.c4 * np.random.randn(2, 1).flatten()
